@@ -5,10 +5,10 @@ import pandas as pd
 import ttach as tta
 import torch
 from torch.utils.data import DataLoader
-import config
-from model import Net
+from inicls import config
+from inicls.model import Net
 
-from data import MyDataSet, transform_test, int2label
+from inicls.data import MyDataSet, transform_test, int2label
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -196,5 +196,5 @@ if __name__ == "__main__":
 
     # single_model_predict()
     # single_model_predict_tta()
-    # multi_model_predict_tta()
-    file2submission()
+    multi_model_predict_tta()
+    # file2submission()

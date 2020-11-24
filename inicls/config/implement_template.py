@@ -1,20 +1,18 @@
 import os
 
 # img_path
-dir_raw_train = ""
-dir_raw_test = ""
+dir_raw_train = "train/"
+dir_raw_test = "test/"
 
 # submission_path
-dir_submission = ""
+dir_submission = "submission/"
 
 # weight_path
-dir_weight = ''
+dir_weight = 'weight/'
 
 # csv_path
-dir_csv_train = ''
+dir_csv_train = 'train.csv'
 dir_csv_test = os.path.join(dir_submission, 'test.csv')
-
-
 
 seed_random = 2020
 
@@ -32,10 +30,12 @@ size_valid_image = 256
 size_test_image = 256
 
 batch_size = 64
-
+lr = 0.001
 
 predict_mode = 1
 
-model_name = 'resnet18'
+network = 'resnet18'
+optimizer = 'Ranger'
+name = 'test'
 save_model_name = 'resnet18'
 predict_model_names = "resnet18"

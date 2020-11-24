@@ -1,12 +1,12 @@
 import os
 import torch
-import config
+from inicls import config
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from PIL import Image
 from tqdm import tqdm
-from data.implement import get_trainval_dataloader, get_test_dataloader
+from inicls.data.implement import get_trainval_dataloader
 
 
 def get_train_img_info():

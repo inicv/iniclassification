@@ -3,7 +3,7 @@ from torchvision.models import resnet18, resnet34, wide_resnet50_2, wide_resnet1
 from torchvision.models import resnext50_32x4d, resnext101_32x8d
 from torchvision.models import densenet121, densenet161, densenet169, densenet201
 from efficientnet_pytorch import EfficientNet
-import config
+from inicls import config
 from .inceptionv4 import inceptionv4
 from .xception import xception
 from .senet import se_resnext50, se_resnext101

@@ -1,6 +1,6 @@
 import os
 import torch
-import config
+from inicls import config
 import numpy as np
 import pandas as pd
 from PIL import Image

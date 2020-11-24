@@ -1,8 +1,16 @@
 import torch
+from inicls import config
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
+
+
+def torch_config():
+    # 用于 pytorch 的一些全局配置以及随机种子的一些生成
+    torch.manual_seed(config.seed_random)
+    torch.backends.cudnn.deterministic = False
+    torch.backends.cudnn.benchmark = True
 
 class FocalLoss(nn.Module):
     def __init__(self, gamma=0, alpha=None, size_average=True):
