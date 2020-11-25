@@ -24,17 +24,22 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
     * [ ] ShuffleNetV1
     * [ ] ShuffleNetV2
     * [ ] GhostNet
+
 - **Attention Module**
     * [ ] SE
     * [ ] CBAM
+
 - **Loss**
   * [x] Softmax
   * [x] Cross Entropy Loss
+
 - **Parallel Training**
     * [ ] Data Parallel
     * [ ] Model Parallel
+
 - **Automatic Mixed Precision**
   * [ ] Apex
+  
 - **Optimizer**
     * [x] [jettify/pytorch-optimizer](https://github.com/jettify/pytorch-optimizer)
 - **LR_Scheduler**
@@ -43,23 +48,32 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
 - **Data Augmentation**
 
   * [ ] RandomErasing
-
-    * [ ] Mixup
-    * [ ] RandAugment
-    * [ ] Cutout
-    * [ ] CutMix
-    * [ ] Colorjitter 
+  * [ ] Mixup
+  * [ ] RandAugment
+  * [ ] Cutout
+  * [ ] CutMix
+  * [ ] Colorjitter 
 
 - **Distillation**
 
   * [ ] Knowledge Distillation
+   
+- **Bag of Tricks**
 
-- Bag of Tricks
-
+  * [x] LR warmup
+  * [x] Model ensemble
+  * [ ] LR finder
   * [ ] Label smooth
-    * [x] LR warmup
-    * [x] Model Ensemble
+  
+  
+- **Configuration Framework**
+ 
+   * [ ] [facebookresearch/hydra](https://github.com/facebookresearch/hydra)
+   
+- **AutoML Experiment**
 
+   * [ ] [microsoft/nni](https://github.com/microsoft/nni)
+   
 ### 如何快速上手
 
 详情见 [GETTING_STARTED.md](https://github.com/inicv/iniclassification/tree/main/inicls/document/GETTING_STARTED.md).
