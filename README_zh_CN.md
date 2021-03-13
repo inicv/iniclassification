@@ -57,18 +57,17 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
 - **Distillation**
 
   * [ ] Knowledge Distillation
-   
+  
 - **Bag of Tricks**
 
   * [x] LR warmup
   * [x] Model ensemble
   * [ ] LR finder
   * [ ] Label smooth
-  
+  * [ ] [Antialiased CNNs](https://github.com/adobe/antialiased-cnns/)
   
 - **Configuration Framework**
- 
-   * [ ] [facebookresearch/hydra](https://github.com/facebookresearch/hydra)
+* [ ] [facebookresearch/hydra](https://github.com/facebookresearch/hydra)
    
 - **AutoML Experiment**
 
