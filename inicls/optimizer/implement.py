@@ -1,7 +1,9 @@
 import torch_optimizer as optim
 import torch.optim
-def get_optimizer(name_optimizer, model, lr):
+def build_optimizer(cfg, model):
+    name_optimizer = cfg.optimizer.type
     optimizer = None
+
     if name_optimizer == 'A2GradExp':
         optimizer = optim.A2GradExp(
             model.parameters(),
@@ -15,8 +17,7 @@ def get_optimizer(name_optimizer, model, lr):
             model.parameters(),
             # kappa=1000.0,
             beta=10.0,
-            lips=10.0,
-        )
+            lips=10.0,        )
     if name_optimizer == 'A2GradUni':
         optimizer = optim.A2GradUni(
             model.parameters(),
@@ -27,17 +28,16 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'AccSGD':
         optimizer = optim.AccSGD(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             kappa=1000.0,
             xi=10.0,
             small_const=0.7,
             weight_decay=0
         )
-
     if name_optimizer == 'AdaBelief':
         optimizer = optim.AdaBelief(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             betas=(0.9, 0.999),
             eps=1e-3,
             weight_decay=0,
@@ -46,11 +46,10 @@ def get_optimizer(name_optimizer, model, lr):
             fixed_decay=False,
             rectify=False,
         )
-
     if name_optimizer == 'AdaBound':
         optimizer = optim.AdaBound(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             betas=(0.9, 0.999),
             final_lr=0.1,
             gamma=1e-3,
@@ -61,7 +60,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'AdaMod':
         optimizer = optim.AdaMod(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             betas=(0.9, 0.999),
             beta3=0.999,
             eps=1e-8,
@@ -70,7 +69,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'Adafactor':
         optimizer = optim.Adafactor(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             eps2=(1e-30, 1e-3),
             clip_threshold=1.0,
             decay_rate=-0.8,
@@ -83,7 +82,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'AdamP':
         optimizer = optim.AdamP(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             betas=(0.9, 0.999),
             eps=1e-8,
             weight_decay=0,
@@ -93,7 +92,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'AggMo':
         optimizer = optim.AggMo(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             betas=(0.0, 0.9, 0.99),
             weight_decay=0,
         )
@@ -110,7 +109,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'DiffGrad':
         optimizer = optim.DiffGrad(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             betas=(0.9, 0.999),
             eps=1e-8,
             weight_decay=0,
@@ -118,7 +117,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'Lamb':
         optimizer = optim.Lamb(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             betas=(0.9, 0.999),
             eps=1e-8,
             weight_decay=0,
@@ -136,7 +135,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'NovoGrad':
         optimizer = optim.NovoGrad(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             betas=(0.9, 0.999),
             eps=1e-8,
             weight_decay=0,
@@ -146,7 +145,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'PID':
         optimizer = optim.PID(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             momentum=0,
             dampening=0,
             weight_decay=1e-2,
@@ -156,7 +155,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'QHAdam':
         optimizer = optim.QHAdam(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             betas=(0.9, 0.999),
             nus=(1.0, 1.0),
             weight_decay=0,
@@ -166,7 +165,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'QHM':
         optimizer = optim.QHM(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             momentum=0,
             nu=0.7,
             weight_decay=1e-2,
@@ -175,7 +174,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'RAdam':
         optimizer = optim.RAdam(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             betas=(0.9, 0.999),
             eps=1e-8,
             weight_decay=0,
@@ -183,7 +182,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'Ranger':
         optimizer = optim.Ranger(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             alpha=0.5,
             k=6,
             N_sma_threshhold=5,
@@ -194,7 +193,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'RangerQH':
         optimizer = optim.RangerQH(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             betas=(0.9, 0.999),
             nus=(.7, 1.0),
             weight_decay=0.0,
@@ -206,7 +205,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'RangerVA':
         optimizer = optim.RangerVA(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             alpha=0.5,
             k=6,
             n_sma_threshhold=5,
@@ -221,7 +220,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'SGDP':
         optimizer = optim.SGDP(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             momentum=0,
             dampening=0,
             weight_decay=1e-2,
@@ -232,7 +231,7 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'SGDW':
         optimizer = optim.SGDW(
             model.parameters(),
-            lr=lr,
+            lr=cfg.optimizer.lr,
             momentum=0,
             dampening=0,
             weight_decay=1e-2,
@@ -275,7 +274,10 @@ def get_optimizer(name_optimizer, model, lr):
     if name_optimizer == 'SGD':
         optimizer = torch.optim.SGD(
             model.parameters(),
-            lr=0.01,
-            momentum=0.9
+            lr=cfg.optimizer.lr,
+            momentum=cfg.optimizer.momentum,
+            weight_decay=cfg.optimizer.weight_decay
         )
+    if optimizer is None:
+        raise Exception('optimizer is wrong')
     return optimizer

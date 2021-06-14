@@ -8,6 +8,8 @@ runs/*/*
 test/*
 Reference.md
 input
+work_dirs
+trash
 
 
 # C extensions

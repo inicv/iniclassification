@@ -1,0 +1,1 @@
+python tools/train.py config/resnet/resnet18_b16x8_cifar10.py
