@@ -1,10 +1,11 @@
 import argparse
+
 from mmcv import Config, DictAction
-from torch_utils import *
-from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
 from torch import nn
-from inicls import build_model, build_optimizer, build_loss, build_scheduler, build_trainval_dataset
+from torch.utils.tensorboard import SummaryWriter
+
+from inicls import build_model, build_optimizer, build_loss, build_scheduler, build_dataset, build_dataloader
+from tools.torch_utils import *
 
 
 def parse_args():
@@ -13,6 +14,7 @@ def parse_args():
     parser.add_argument('--work-dir', help='the dir to save logs and models')
     parser.add_argument(
         '--resume-from', help='the checkpoint file to resume from')
+    parser.add_argument('--tag', help='the tag')
     parser.add_argument(
         '--no-validate',
         action='store_true',
@@ -50,9 +52,10 @@ def evaluate(model, valid_dataloader):
     total_acc = 0
 
     with torch.no_grad():
-        for step, (images, labels) in enumerate(valid_dataloader):
-            data_len += len(labels)
+        for step, data in enumerate(valid_dataloader):
+            images, labels = data['img'], data['gt_label']
             images, labels = images.cuda(), labels.cuda()
+            data_len += len(labels)
 
             logits = model(images)
             _acc = accuracy(logits, labels)
@@ -66,6 +69,7 @@ if __name__ == '__main__':
     args = parse_args()
     cfg = Config.fromfile(args.config)
     cfg.config = args.config
+    cfg.tag = args.tag
 
     if args.options is not None:
         cfg.merge_from_dict(args.options)
@@ -81,10 +85,12 @@ if __name__ == '__main__':
     ###################################################################################
     # Dataset, DataLoader
     ###################################################################################
-    train_dataset, valid_dataset = build_trainval_dataset(cfg)
-    train_dataloader = DataLoader(train_dataset, batch_size=cfg.batch_size, num_workers=cfg.num_workers, shuffle=True,
-                                  drop_last=True, pin_memory=True)
-    valid_dataloader = DataLoader(valid_dataset, batch_size=cfg.batch_size, num_workers=1, pin_memory=True)
+    train_dataset = build_dataset(cfg.data.train)
+    valid_dataset = build_dataset(cfg.data.val)
+    train_dataloader = build_dataloader(dataset=train_dataset, samples_per_gpu=cfg.batch_size,
+                                        workers_per_gpu=cfg.num_workers, shuffle=True, pin_memory=False)
+    valid_dataloader = build_dataloader(dataset=valid_dataset, samples_per_gpu=cfg.batch_size,
+                                        workers_per_gpu=cfg.num_workers, shuffle=False, pin_memory=False)
 
     ###################################################################################
     # Network
@@ -94,7 +100,6 @@ if __name__ == '__main__':
     model.train()
     log_func('[i] Architecture is {}'.format(cfg.model))
     log_func('[i] Total Params: %.2fM' % (calculate_parameters(model)))
-    log_func()
 
     if cfg.parallel:
         model = nn.DataParallel(model)
@@ -123,9 +128,11 @@ if __name__ == '__main__':
     writer = SummaryWriter(cfg.tensorboard_dir)
     train_iterator = Iterator(train_dataloader)
     train_meter = Average_Meter(['loss'])
+    iteration = 0
 
     for iteration in range(max_iteration):
-        images, labels = train_iterator.get()
+        data = train_iterator.get()
+        images, labels = data['img'], data['gt_label']
         images, labels = images.cuda(), labels.cuda()
 
         logits = model(images)
@@ -179,4 +186,5 @@ if __name__ == '__main__':
         #################################################################################################
         if (iteration + 1) % log_iteration == 0:
             scheduler.step()
+        iteration += 1
     writer.close()

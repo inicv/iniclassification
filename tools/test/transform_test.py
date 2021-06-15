@@ -1,8 +1,6 @@
 from mmcv import Config
-
+from inicls.data import build_dataset
 cfg = Config.fromfile('./config_test.py')
 
-pipeline = cfg.train_pipeline
-for transform in pipeline:
-    type = transform['type']
-print(pipeline)
+dataset = build_dataset(cfg.data.train)
+print(dataset)

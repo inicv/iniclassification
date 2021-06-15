@@ -26,7 +26,7 @@ def set_cudnn(cfg):
 
 def set_work_dir(cfg):
     if cfg.get('work_dir', False) is None:
-        cfg.work_dir = os.path.join('./work_dirs', os.path.splitext(os.path.basename(cfg.config))[0])
+        cfg.work_dir = os.path.join('./work_dirs', os.path.splitext(os.path.basename(cfg.config))[0]+f'_tag_{cfg.tag}')
 
 def make_log_dir(cfg):
     log_dir = os.path.join(cfg.work_dir, 'logs')

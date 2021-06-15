@@ -1,9 +1,9 @@
-from inicls import get_model
+from inicls import build_model
 from mmcv import Config
 from tools.torch_utils import *
 
 cfg = Config.fromfile('./config_test.py')
-model = get_model(cfg=cfg)
+model = build_model(cfg=cfg)
 model = model.cuda()
 model.train()
 

@@ -1,5 +1,5 @@
 # get_optimizer
-optimizer = dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.1)
 
 # TODO: grad_clip
 # optimizer_config = dict(grad_clip=None)
@@ -8,6 +8,6 @@ optimizer = dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001)
 loss = dict(type='CrossEntropyLoss')
 
 # get_scheduler
-lr_scheduler = dict(type='MultiStepLR', milestones=[100, 150], gamma=0.1)
+lr_scheduler = dict(type='MultiStepLR', milestones=[40, 45], gamma=0.1)
 
-max_epoch = 200
+max_epoch = 50
