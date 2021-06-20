@@ -15,6 +15,15 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
 - **Loss**
   * [x] Softmax
   * [x] Cross Entropy Loss
+  
+- **Validation metric**
+  * [x] Accuracy
+  * [ ] Precision 
+  * [ ] Recall 
+  * [ ] Area Under Curve
+  * [ ] mean Average Precision
+  * [ ] F1 score
+  * [ ] Confusion Matrix
 
 - **Parallel Training**
   * [ ] Data Parallel
