@@ -45,10 +45,11 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
   * [ ] Knowledge Distillation
   
 - **Bag of Tricks**
-  * [x] LR warmup
-  * [x] Model ensemble
-  * [ ] LR finder
-  * [ ] Label smooth
+  * [x] [LR warmup](https://github.com/ildoonet/pytorch-gradual-warmup-lr)
+  * [x] [Model ensemble](https://github.com/TorchEnsemble-Community/Ensemble-Pytorch)
+  * [x] [Test Time Augmentation](https://github.com/qubvel/ttach)
+  * [ ] [LR finder](https://github.com/davidtvs/pytorch-lr-finder)
+  * [ ] [Label smooth](https://github.com/open-mmlab/mmclassification/blob/84a939f858b746fe41a58b78480348ac2b705a98/mmcls/models/losses/label_smooth_loss.py)
   * [ ] [Antialiased CNNs](https://github.com/adobe/antialiased-cnns/)
   
 - **Configuration Framework**
@@ -56,8 +57,8 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
   * [x] [open-mmlab/mmcv](https://github.com/open-mmlab/mmcv)
   
 - **AutoML Experiment**
-   * [ ] [microsoft/nni](https://github.com/microsoft/nni)
-
+  * [ ] [microsoft/nni](https://github.com/microsoft/nni)
+  
 ### 如何快速上手
 
 详情见 [GETTING_STARTED.md](https://github.com/inicv/iniclassification/tree/main/document/GETTING_STARTED.md).
@@ -76,6 +77,7 @@ yundoo99@gmail.com
 - [rwightman/pytorch-image-models](https://github.com/rwightman/pytorch-image-models)
 
 
-感谢以下网站的文章提供的帮助
+感谢以下文章提供的帮助
 
 - http://giantpandacv.com/
+- [Bag of Tricks for Image Classification with Convolutional Neural Networks](https://arxiv.org/pdf/1812.01187.pdf)
