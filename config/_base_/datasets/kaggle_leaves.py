@@ -6,7 +6,7 @@ num_workers = 8
 root = '/home/muyun99/data/dataset/competition_data/kaggle_classify_leaves/dataset'
 
 # dataset settings
-dataset_type = 'competion_base_dataset'
+dataset_type = 'competition_base_dataset'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53],
     std=[58.395, 57.12, 57.375],

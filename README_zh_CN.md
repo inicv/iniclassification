@@ -10,13 +10,13 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
   * [x] [rwightman/pytorch-image-models](https://github.com/rwightman/pytorch-image-models)
 
 - **Attention Module**
-  * [x] [xmu-xiaoma666/External-Attention-pytorch](https://github.com/xmu-xiaoma666/External-Attention-pytorch)
+  * [ ] [xmu-xiaoma666/External-Attention-pytorch](https://github.com/xmu-xiaoma666/External-Attention-pytorch)
 
 - **Loss**
   * [x] Softmax
   * [x] Cross Entropy Loss
   
-- **Validation metric**
+- **[Validation metric](https://github.com/Media-Smart/volkscv/tree/master/volkscv/metrics/classification)**
   * [x] Accuracy
   * [ ] Precision 
   * [ ] Recall 

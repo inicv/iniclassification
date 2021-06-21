@@ -1,20 +1,14 @@
 import os
 import os.path
-import pickle
-
 import mmcv
 import numpy as np
 import pandas as pd
-import torch.distributed as dist
-from mmcv.runner import get_dist_info
-
 from .base_dataset import BaseDataset
 from .builder import DATASETS
-from .utils import check_integrity, download_and_extract_archive
 
 
 @DATASETS.register_module()
-class competion_base_dataset(BaseDataset):
+class competition_base_dataset(BaseDataset):
     def load_annotations(self):
         self.data_csv_path = os.path.join(self.data_prefix, self.ann_file)
         self.meta_txt = os.path.join(self.data_prefix, 'classmap.txt')
