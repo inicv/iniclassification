@@ -73,9 +73,18 @@ def split_train_val():
         valid_data.to_csv(os.path.join(cfg.path_save_trainval_csv, f'valid.csv'))
         print(f'train:{train_data.shape[0]}, valid:{valid_data.shape[0]}')
 
+def generate_test_csv():
+    raw_test_df = pd.read_csv(cfg.path_raw_test_csv)
+    raw_test_df.columns = ['filename']
+
+    raw_test_df['filename'] = raw_test_df['filename'].apply(
+        lambda item: os.path.join(cfg.path_train_img, item.split('/')[-1])
+    )
+    raw_test_df.to_csv(os.path.join(cfg.path_save_test_csv, f'test.csv'))
 
 if __name__ == '__main__':
     cfg = Config.fromfile('config_data_utils_test.py')
-    analyse_class_num()
-    generate_classmap()
-    split_train_val()
+    # analyse_class_num()
+    # generate_classmap()
+    # split_train_val()
+    generate_test_csv()

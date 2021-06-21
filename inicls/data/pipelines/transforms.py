@@ -648,7 +648,7 @@ class Resize(object):
 
     def _resize_img(self, results):
         for key in results.get('img_fields', ['img']):
-            img = results[key]
+            img = results[key][0]
             ignore_resize = False
             if self.resize_w_short_side:
                 h, w = img.shape[:2]

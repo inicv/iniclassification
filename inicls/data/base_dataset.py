@@ -54,6 +54,17 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
 
         return {_class: i for i, _class in enumerate(self.CLASSES)}
 
+    @property
+    def idx_to_class(self):
+        """Map mapping class index to class name.
+
+        Returns:
+            dict: mapping from class index to class name.
+        """
+
+        return {i : _class for i, _class in enumerate(self.CLASSES)}
+
+
     def get_gt_labels(self):
         """Get all ground-truth labels (categories).
 

@@ -10,7 +10,9 @@ Reference.md
 input
 work_dirs
 trash
-
+test.sh
+train_gpu0.sh
+train_gpu1.sh
 
 # C extensions
 *.so

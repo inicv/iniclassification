@@ -1,13 +1,13 @@
 from mmcv.utils import Registry, build_from_cfg
 from functools import partial
-PIPELINES = Registry('pipeline')
-DATASETS = Registry('dataset')
 from torch.utils.data import DataLoader
 from mmcv.parallel import collate
 from mmcv.runner import get_dist_info
 import numpy as np
 import random
 
+PIPELINES = Registry('pipeline')
+DATASETS = Registry('dataset')
 
 def build_dataset(cfg):
     dataset = build_from_cfg(cfg, DATASETS)

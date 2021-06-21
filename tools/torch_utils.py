@@ -41,12 +41,14 @@ def make_log_dir(cfg):
     log_path = os.path.join(log_dir, 'run.txt')
     data_path = os.path.join(data_dir, 'data.json')
     model_path = os.path.join(model_dir, 'best.pth')
+    submission_path = os.path.join(cfg.work_dir, f'submission_{cfg.tag}.csv')
 
     cfg.model_dir = model_dir
     cfg.tensorboard_dir = tensorboard_dir
     cfg.log_path = log_path
     cfg.data_path = data_path
     cfg.model_path = model_path
+    cfg.submission_path = submission_path
 
 def save_config(cfg):
     if isinstance(cfg, mmcv.Config):
