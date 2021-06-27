@@ -1,10 +1,12 @@
-from tqdm import tqdm
-import pandas as pd
+import copy
+
 import ttach as tta
 from mmcv import Config
-from inicls import build_model, build_dataset, build_dataloader
-from train import parse_args
+from tqdm import tqdm
+
+from inicls import build_dataset, build_dataloader, build_model
 from tools.torch_utils import *
+from train import parse_args
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -13,19 +15,26 @@ def single_model_predict(predict_model):
     data_len = 0
     total_acc = 0
     # 推理验证集性能
+    pred_valid_cls_list = []
     with torch.no_grad():
         for data in tqdm(valid_dataloader):
             images, labels = data['img'], data['gt_label']
             images, labels = images.cuda(), labels.cuda()
-            data_len += len(labels)
 
             logits = predict_model(images)
-            _acc = accuracy(logits, labels)
+            logits_bk = copy.deepcopy(logits)
+
+            logits = torch.max(torch.softmax(logits, dim=1), dim=1)
+            logits = logits[1].cpu().numpy()
+            pred_valid_cls_list += logits.tolist()
+
+            _acc = accuracy(logits_bk, labels)
+            data_len += len(labels)
             total_acc += _acc[0].item() * len(labels)
     print(f'validation acc is {total_acc / data_len}')
 
     # 推理测试集并得到结果
-    pred_cls_list = []
+    pred_test_cls_list = []
     with torch.no_grad():
         for data in tqdm(test_dataloader):
             images = data['img']
@@ -34,15 +43,15 @@ def single_model_predict(predict_model):
             logits = predict_model(images)
             logits = torch.max(torch.softmax(logits, dim=1), dim=1)
             logits = logits[1].cpu().numpy()
-            pred_cls_list += logits.tolist()
-    return pred_cls_list
+            pred_test_cls_list += logits.tolist()
+    return pred_valid_cls_list, pred_test_cls_list
 
 
 def single_model_predict_tta(predict_model):
     transforms = tta.Compose([
         tta.HorizontalFlip(),
         tta.VerticalFlip(),
-        tta.FiveCrops(224, 224)
+        # tta.FiveCrops(224, 224)
     ])
 
     tta_model = tta.ClassificationTTAWrapper(predict_model, transforms)
@@ -107,48 +116,40 @@ def single_model_predict_tta(predict_model):
 #     submission.to_csv(config.dir_csv_test, index=False, header=False)
 
 
-# def file2submission():
-#     preds_dict = dict()
-#     for model_name in model_name_list:
-#         if cfg.fold == 1:
-#             submission_path = get_submission_path(model_name)
-#             df = pd.read_csv(submission_path, header=None)
-#             preds_dict['{}'.format(model_name)] = df.values
-#         else:
-#             for fold_idx in range(cfg.fold):
-#                 submission_path = get_submission_path_fold(model_name, fold_idx)
-#                 df = pd.read_csv(submission_path header=None)
-#                 preds_dict['{}_{}'.format(model_name, fold_idx)] = df.values
-#     pred_list = get_pred_list(preds_dict)
-#     submission = pd.DataFrame(
-#         {"id": range(len(pred_list)), "label": [int2label(x) for x in pred_list]})
-#     submission.to_csv(config.dir_csv_test, index=False, header=False)
+def file2submission():
+    valid_preds_dict = dict()
+    test_preds_dict = dict()
+    valid_data_len = len(valid_dataset)
+    test_data_len = len(test_dataset)
+    for model_name in model_name_list:
+        valid_submission_path = get_valid_submission_path(cfg, model_name)
+        test_submission_path = get_test_submission_path(cfg, model_name)
+        valid_df = pd.read_csv(valid_submission_path)
+        test_df = pd.read_csv(test_submission_path)
+        valid_data_len = len(valid_df)
+        test_data_len = len(test_df)
+        valid_preds_dict[f'{model_name}'] = valid_df['label'].values
+        test_preds_dict[f'{model_name}'] = test_df['label'].values
+
+    valid_pred_list = get_pred_list(valid_preds_dict, valid_data_len)
+    test_pred_list = get_pred_list(test_preds_dict, test_data_len)
+    # calculate Metric
+    # acc = calculate_acc_from_two_list(valid_pred_list, list(valid_data['label']))
+    # print(f'validation acc is {acc}')
+    return valid_pred_list, test_pred_list
 
 
-# def get_pred_list(preds_dict):
-#     pred_list = []
-#     if predict_mode == 1:
-#         for i in range(data_len):
-#             preds = []
-#             for model_name in model_name_list:
-#                 for fold_idx in range(5):
-#                     prob = preds_dict['{}_{}'.format(model_name, fold_idx)][i]
-#                     pred = np.argmax(prob)
-#                     preds.append(pred)
-#             pred_list.append(max(preds, key=preds.count))
-#     else:
-#         for i in range(data_len):
-#             prob = None
-#             for model_name in model_name_list:
-#                 for fold_idx in range(5):
-#                     if prob is None:
-#                         prob = preds_dict['{}_{}'.format(
-#                             model_name, fold_idx)][i] * ratio_dict[model_name]
-#                     else:
-#                         prob += preds_dict['{}_{}'.format(
-#                             model_name, fold_idx)][i] * ratio_dict[model_name]
-#             pred_list.append(np.argmax(prob))
-#     return pred_list
+def get_pred_list(preds_dict, data_len):
+    pred_list = []
+    for i in range(data_len):
+        preds = []
+        for model_name in model_name_list:
+            pred = cls_idx_map[preds_dict[f'{model_name}'][i]]
+            # pred = np.argmax(prob)
+            preds.append(pred)
+        pred_list.append(max(preds, key=preds.count))
+
+    return pred_list
 
 
 if __name__ == "__main__":
@@ -168,32 +169,63 @@ if __name__ == "__main__":
     log_func = lambda string='': print_log(string, cfg)
 
     valid_dataset = build_dataset(cfg.data.val)
-    valid_dataloader = build_dataloader(dataset=valid_dataset, samples_per_gpu=cfg.batch_size,
+    valid_dataloader = build_dataloader(dataset=valid_dataset, samples_per_gpu=int(cfg.batch_size * 4),
                                         workers_per_gpu=cfg.num_workers, shuffle=False, pin_memory=False)
 
     test_dataset = build_dataset(cfg.data.test)
-    test_dataloader = build_dataloader(dataset=test_dataset, samples_per_gpu=cfg.batch_size,
+    test_dataloader = build_dataloader(dataset=test_dataset, samples_per_gpu=int(cfg.batch_size * 4),
                                        workers_per_gpu=cfg.num_workers, shuffle=False, pin_memory=True)
     idx_cls_map = test_dataset.idx_to_class
+    cls_idx_map = test_dataset.class_to_idx
 
-    model = build_model(cfg)
-    # Todo load_from
-    # model.load_state_dict(torch.load(cfg.load_from))
-    model.load_state_dict(torch.load(cfg.model_path))
-    model = model.cuda()
-    model.eval()
-    log_func('[i] Architecture is {}'.format(cfg.model))
-    log_func('[i] Total Params: %.2fM' % (calculate_parameters(model)))
+    valid_csv_path = os.path.join(cfg.data.val.data_prefix, cfg.data.val.ann_file)
+    valid_data = pd.read_csv(valid_csv_path)
 
-    test_timer = Timer()
-    # pred_list = single_model_predict(model)
-    pred_list = single_model_predict_tta(model)
-    # multi_model_predict_tta(model)
-    # file2submission(model)
+    # model = build_model(cfg)
+    # model.load_state_dict(torch.load(cfg.model_path))
+    # model = model.cuda()
+    # model.eval()
+    # log_func('[i] Architecture is {}'.format(cfg.model))
+    # log_func('[i] Total Params: %.2fM' % (calculate_parameters(model)))
+    #
+    # test_timer = Timer()
+    # # pred_valid_list, pred_test_list = single_model_predict(model)
+    # pred_valid_list, pred_test_list = single_model_predict_tta(model)
+    # valid_data['image'] = valid_data['filename']
+    # valid_data['label'] = pd.Series(pred_valid_list)
+    # valid_df = pd.concat([valid_data['image'], valid_data['label']], axis=1)
+    #
+    # test_df = pd.DataFrame({
+    #     "image": [f'images/{idx + 18353}.jpg' for idx in range(len(pred_test_list))],
+    #     "label": [idx_cls_map[x] for x in pred_test_list]
+    # })
+    #
+    # valid_df.to_csv(cfg.valid_submission_path, index=False)
+    # test_df.to_csv(cfg.test_submission_path, index=False)
 
-    submission = pd.DataFrame({
-        "image": [f'images/{idx + 18353}.jpg' for idx in range(len(pred_list))],
-        "label": [idx_cls_map[x] for x in pred_list]
+    model_name_list = ['resnext101_32x8d_fold0', 'resnext101_32x8d_fold1', 'resnext101_32x8d_fold2',
+                       'resnext101_32x8d_fold3', 'resnext101_32x8d_fold4', 'resnext101_32x8d', 'hrnet_w48',
+                       'res2net101_26w_4s', 'legacy_seresnext101_32x4d', 'gluon_seresnext101_32x4d', 'res2next50',
+                       'hrnet_w32', 'seresnext50_32x4d_fold0', 'seresnext50_32x4d_fold1', 'seresnext50_32x4d_fold2',
+                       'seresnext50_32x4d_fold3', 'seresnext50_32x4d_fold4', 'resnest50d_fold0', 'resnest50d_fold1', 'resnest50d_fold2',
+                       'resnest50d_fold3', 'resnest50d_fold4', 'res2net50_26w_6s_fold0', 'res2net50_26w_6s_fold1', 'res2net50_26w_6s_fold2',
+                       'res2net50_26w_6s_fold3', 'res2net50_26w_6s_fold4']
+    # model_name_list = ['seresnext50_32x4d_fold0', 'seresnext50_32x4d_fold1', 'seresnext50_32x4d_fold2',
+    #                    'seresnext50_32x4d_fold3', 'seresnext50_32x4d_fold4']
+    # model_name_list = ['resnest50d_fold0', 'resnest50d_fold1', 'resnest50d_fold2',
+    #                    'resnest50d_fold3', 'resnest50d_fold4']
+    # model_name_list = ['res2net50_26w_6s_fold0', 'res2net50_26w_6s_fold1', 'res2net50_26w_6s_fold2',
+    #                    'res2net50_26w_6s_fold3', 'res2net50_26w_6s_fold4']
+    pred_ensemble_valid_list, pred_ensemble_test_list = file2submission()
+
+    valid_data['image'] = valid_data['filename']
+    valid_data['label'] = pd.Series(pred_ensemble_valid_list)
+    valid_df = pd.concat([valid_data['image'], valid_data['label']], axis=1)
+
+    test_df = pd.DataFrame({
+        "image": [f'images/{idx + 18353}.jpg' for idx in range(len(pred_ensemble_test_list))],
+        "label": [idx_cls_map[x] for x in pred_ensemble_test_list]
     })
-
-    submission.to_csv(cfg.submission_path, index=False)
+    valid_df.to_csv('valid_submission.csv', index=False)
+    test_df.to_csv('test_submission.csv', index=False)
+    print(f'{model_name_list}_TTA_ensemble saved!')

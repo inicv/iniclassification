@@ -6,6 +6,7 @@ import numpy as np
 import os
 import mmcv
 import time
+import pandas as pd
 
 import torch.nn.functional as F
 
@@ -28,6 +29,24 @@ def set_work_dir(cfg):
     if cfg.get('work_dir', False) is None:
         cfg.work_dir = os.path.join('./work_dirs', os.path.splitext(os.path.basename(cfg.config))[0]+f'_tag_{cfg.tag}')
 
+def get_test_submission_path(cfg, tag):
+    work_dir = os.path.join('./work_dirs', os.path.splitext(os.path.basename(cfg.config))[0]+f'_tag_{tag}')
+    test_submission_path = os.path.join(work_dir, f'test_submission_{tag}.csv')
+    return test_submission_path
+
+def get_valid_submission_path(cfg, tag):
+    work_dir = os.path.join('./work_dirs', os.path.splitext(os.path.basename(cfg.config))[0]+f'_tag_{tag}')
+    valid_submission_path = os.path.join(work_dir, f'test_submission_{tag}.csv')
+    return valid_submission_path
+
+def calculate_acc_from_two_list(list1, list2):
+    assert len(list1) == len(list2)
+    T = 0
+    for idx, (item1, item2) in enumerate(zip(list1, list2)):
+        if item1 == item2:
+            T += 1
+    return T/len(list1)
+
 def make_log_dir(cfg):
     log_dir = os.path.join(cfg.work_dir, 'logs')
     data_dir = os.path.join(cfg.work_dir, 'data')
@@ -41,14 +60,16 @@ def make_log_dir(cfg):
     log_path = os.path.join(log_dir, 'run.txt')
     data_path = os.path.join(data_dir, 'data.json')
     model_path = os.path.join(model_dir, 'best.pth')
-    submission_path = os.path.join(cfg.work_dir, f'submission_{cfg.tag}.csv')
+    valid_submission_path = os.path.join(cfg.work_dir, f'valid_submission_{cfg.tag}.csv')
+    test_submission_path = os.path.join(cfg.work_dir, f'test_submission_{cfg.tag}.csv')
 
     cfg.model_dir = model_dir
     cfg.tensorboard_dir = tensorboard_dir
     cfg.log_path = log_path
     cfg.data_path = data_path
     cfg.model_path = model_path
-    cfg.submission_path = submission_path
+    cfg.valid_submission_path = valid_submission_path
+    cfg.test_submission_path = test_submission_path
 
 def save_config(cfg):
     if isinstance(cfg, mmcv.Config):
@@ -174,3 +195,12 @@ class Average_Meter:
 
     def clear(self):
         self.data_dic = {key: [] for key in self.keys}
+
+if __name__ == '__main__':
+
+    valid_gt = pd.read_csv('/home/muyun99/data/dataset/competition_data/kaggle_classify_leaves/dataset/valid_fold0.csv')
+    valid_pred = pd.read_csv('/home/muyun99/MyGithub/iniclassification/valid_submission.csv')
+    list1 = list(valid_gt['label'])
+    list2 = list(valid_pred['label'])
+    acc = calculate_acc_from_two_list(list1, list2)
+    print(acc)

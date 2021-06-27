@@ -85,6 +85,8 @@ if __name__ == '__main__':
     ###################################################################################
     # Dataset, DataLoader
     ###################################################################################
+    log_func('[i] train dataset is {}'.format(cfg.data.train.ann_file))
+    log_func('[i] valid dataset is {}'.format(cfg.data.val.ann_file))
     train_dataset = build_dataset(cfg.data.train)
     valid_dataset = build_dataset(cfg.data.val)
     train_dataloader = build_dataloader(dataset=train_dataset, samples_per_gpu=cfg.batch_size,

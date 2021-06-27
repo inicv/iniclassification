@@ -25,11 +25,8 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
   * [ ] F1 score
   * [ ] Confusion Matrix
 
-- **Parallel Training**
-  * [ ] Data Parallel
-  * [ ] Model Parallel
-
-- **Automatic Mixed Precision**
+- **Faster Training**
+  * [ ] [Horovod](https://github.com/horovod/horovod) + SyncBN + Different Random Seed
   * [ ] [NVIDIA/apex](https://github.com/NVIDIA/apex)
   
 - **Optimizer**
