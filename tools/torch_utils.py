@@ -24,6 +24,7 @@ def set_seed(cfg):
 def set_cudnn(cfg):
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
+        torch.backends.cudnn.deterministic = False
 
 def set_work_dir(cfg):
     if cfg.get('work_dir', False) is None:

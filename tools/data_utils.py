@@ -51,6 +51,7 @@ def split_train_val():
     raw_train_df['label'] = raw_train_df['label'].apply(
         lambda item: label_index_map[item]
     )
+    raw_train_df.to_csv(os.path.join(cfg.path_save_trainval_csv, f'raw_train.csv'))
 
     x = raw_train_df['filename'].values
     y = raw_train_df['label'].values
@@ -84,7 +85,7 @@ def generate_test_csv():
 
 if __name__ == '__main__':
     cfg = Config.fromfile('config_data_utils_test.py')
-    # analyse_class_num()
-    # generate_classmap()
-    # split_train_val()
-    generate_test_csv()
+    analyse_class_num()
+    generate_classmap()
+    split_train_val()
+    # generate_test_csv()
