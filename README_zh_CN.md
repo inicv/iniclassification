@@ -27,7 +27,9 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
 
 - **Faster Training**
   * [ ] [Horovod](https://github.com/horovod/horovod) + SyncBN + Different Random Seed
-  * [ ] [NVIDIA/apex](https://github.com/NVIDIA/apex)
+  * [ ] [~~NVIDIA/apex~~](https://github.com/NVIDIA/apex)
+  * [x] [torch.cuda.amp](https://github.com/pytorch/pytorch/tree/master/torch/cuda/amp)
+  
   
 - **Optimizer**
   * [x] [jettify/pytorch-optimizer](https://github.com/jettify/pytorch-optimizer)

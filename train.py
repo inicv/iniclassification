@@ -7,6 +7,12 @@ from torch.utils.tensorboard import SummaryWriter
 from inicls import build_model, build_optimizer, build_loss, build_scheduler, build_dataset, build_dataloader
 from tools.torch_utils import *
 
+from torch.cuda.amp import GradScaler, autocast
+from apex import amp
+from apex.parallel import convert_syncbn_model
+from apex.parallel import DistributedDataParallel as DDP
+
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a model')
@@ -56,8 +62,12 @@ def evaluate(model, valid_dataloader):
             images, labels = data['img'], data['gt_label']
             images, labels = images.cuda(), labels.cuda()
             data_len += len(labels)
+            if cfg.fp16:
+                with autocast():
+                    logits = model(images)
+            else:
+                logits = model(images)
 
-            logits = model(images)
             _acc = accuracy(logits, labels)
             total_acc += _acc[0].item() * len(labels)
 
@@ -105,6 +115,7 @@ if __name__ == '__main__':
 
     if cfg.parallel:
         model = nn.DataParallel(model)
+
     load_model_func = lambda: load_model(model, cfg.model_path, parallel=cfg.parallel)
     save_model_func = lambda: save_model(model, cfg.model_path, parallel=cfg.parallel)
 
@@ -132,17 +143,30 @@ if __name__ == '__main__':
     train_meter = Average_Meter(['loss'])
     iteration = 0
 
+
+    if cfg.fp16 is True:
+        scaler = GradScaler()
+    else:
+        scaler = None
+
     for iteration in range(max_iteration):
         data = train_iterator.get()
         images, labels = data['img'], data['gt_label']
         images, labels = images.cuda(), labels.cuda()
 
-        logits = model(images)
-        loss = criterion(logits, labels).mean()
-
         optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+        if cfg.fp16 is True:
+            with autocast():
+                logits = model(images)
+                loss = criterion(logits, labels)
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
+        else:
+            logits = model(images)
+            loss = criterion(logits, labels)
+            loss.backward()
+            optimizer.step()
 
         train_meter.add({
             'loss': loss.item(),

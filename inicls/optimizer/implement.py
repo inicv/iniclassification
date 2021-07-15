@@ -148,7 +148,8 @@ def build_optimizer(cfg, model):
     if name_optimizer == 'SGD':
         optimizer = torch.optim.SGD(
             model.parameters(),
-            lr=cfg.optimizer.lr
+            lr=cfg.optimizer.lr,
+            momentum=cfg.optimizer.momentum
         )
     if optimizer is None:
         raise Exception('optimizer is wrong')

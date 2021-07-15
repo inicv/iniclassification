@@ -1,5 +1,5 @@
 # get_optimizer
-optimizer = dict(type='SGD', lr=0.1)
+optimizer = dict(type='SGD', lr=0.1, momentum=0)
 
 # TODO: grad_clip
 # optimizer_config = dict(grad_clip=None)
