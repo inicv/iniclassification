@@ -26,9 +26,9 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
   * [ ] Confusion Matrix
 
 - **Faster Training**
+  * [x] [torch.cuda.amp](https://github.com/pytorch/pytorch/tree/master/torch/cuda/amp) or [~~NVIDIA/apex~~](https://github.com/NVIDIA/apex)
   * [ ] [Horovod](https://github.com/horovod/horovod) + SyncBN + Different Random Seed
-  * [ ] [~~NVIDIA/apex~~](https://github.com/NVIDIA/apex)
-  * [x] [torch.cuda.amp](https://github.com/pytorch/pytorch/tree/master/torch/cuda/amp)
+  * [ ] [NVIDIA/DALI](https://github.com/NVIDIA/DALI)
   
   
 - **Optimizer**
@@ -52,8 +52,7 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
   * [ ] [Antialiased CNNs](https://github.com/adobe/antialiased-cnns/)
   
 - **Configuration Framework**
-  * [ ] [~~facebookresearch/hydra~~](https://github.com/facebookresearch/hydra)
-  * [x] [open-mmlab/mmcv](https://github.com/open-mmlab/mmcv)
+  * [x] [open-mmlab/mmcv](https://github.com/open-mmlab/mmcv) or [~~facebookresearch/hydra~~](https://github.com/facebookresearch/hydra)
   
 - **AutoML Experiment**
   * [ ] [microsoft/nni](https://github.com/microsoft/nni)

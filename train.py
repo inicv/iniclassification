@@ -8,11 +8,6 @@ from inicls import build_model, build_optimizer, build_loss, build_scheduler, bu
 from tools.torch_utils import *
 
 from torch.cuda.amp import GradScaler, autocast
-from apex import amp
-from apex.parallel import convert_syncbn_model
-from apex.parallel import DistributedDataParallel as DDP
-
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a model')
@@ -99,6 +94,9 @@ if __name__ == '__main__':
     log_func('[i] valid dataset is {}'.format(cfg.data.val.ann_file))
     train_dataset = build_dataset(cfg.data.train)
     valid_dataset = build_dataset(cfg.data.val)
+
+
+
     train_dataloader = build_dataloader(dataset=train_dataset, samples_per_gpu=cfg.batch_size,
                                         workers_per_gpu=cfg.num_workers, shuffle=True, pin_memory=False)
     valid_dataloader = build_dataloader(dataset=valid_dataset, samples_per_gpu=cfg.batch_size,
@@ -115,6 +113,7 @@ if __name__ == '__main__':
 
     if cfg.parallel:
         model = nn.DataParallel(model)
+
 
     load_model_func = lambda: load_model(model, cfg.model_path, parallel=cfg.parallel)
     save_model_func = lambda: save_model(model, cfg.model_path, parallel=cfg.parallel)
@@ -152,7 +151,7 @@ if __name__ == '__main__':
     for iteration in range(max_iteration):
         data = train_iterator.get()
         images, labels = data['img'], data['gt_label']
-        images, labels = images.cuda(), labels.cuda()
+        images, labels = images.cuda(non_blocking=True), labels.cuda(non_blocking=True)
 
         optimizer.zero_grad()
         if cfg.fp16 is True:

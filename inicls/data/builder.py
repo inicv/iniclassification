@@ -20,6 +20,7 @@ def build_dataloader(dataset,
                      shuffle=True,
                      seed=None,
                      pin_memory=True,
+                     sampler=None,
                      **kwargs):
     """Build PyTorch DataLoader.
 
@@ -44,7 +45,6 @@ def build_dataloader(dataset,
         DataLoader: A PyTorch dataloader.
     """
     rank, world_size = get_dist_info()
-    sampler = None
     batch_size = num_gpus * samples_per_gpu
     num_workers = num_gpus * workers_per_gpu
 
