@@ -1,4 +1,4 @@
-from .model import build_model
+from .models import build_model
 from .optimizer import build_optimizer
 from .loss import build_loss
 from .scheduler import build_scheduler
