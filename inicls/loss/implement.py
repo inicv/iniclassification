@@ -6,6 +6,7 @@ from torch.nn import L1Loss, MSELoss, CrossEntropyLoss, CTCLoss, NLLLoss, Poisso
     BCEWithLogitsLoss, MarginRankingLoss, HingeEmbeddingLoss, MultiLabelMarginLoss, SmoothL1Loss, SoftMarginLoss, \
     MultiLabelSoftMarginLoss, CosineEmbeddingLoss, MultiMarginLoss, TripletMarginLoss, TripletMarginWithDistanceLoss
 
+
 class LabelSmoothCELoss(nn.Module):
     def __init__(self):
         super().__init__()
@@ -28,6 +29,8 @@ def build_loss(cfg):
         criterion = CrossEntropyLoss()
     elif name_loss == 'LabelSmoothCELoss':
         criterion = LabelSmoothCELoss()
+    elif name_loss == 'multilabel_soft_margin_loss':
+        criterion = F.multilabel_soft_margin_loss
 
     if criterion is None:
         raise Exception('criterion is wrong')

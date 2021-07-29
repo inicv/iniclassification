@@ -72,7 +72,7 @@ def accuracy(pred, target, topk=1, thrs=None):
     """Calculate accuracy according to the prediction and target.
 
     Args:
-        pred (torch.Tensor | np.array): The model prediction.
+        pred (torch.Tensor | np.array): The models prediction.
         target (torch.Tensor | np.array): The target of each prediction
         topk (int | tuple[int]): If the predictions in ``topk``
             matches the target, the predictions will be regarded as

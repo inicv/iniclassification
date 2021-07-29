@@ -10,7 +10,7 @@ from tools.torch_utils import *
 from torch.cuda.amp import GradScaler, autocast
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Train a model')
+    parser = argparse.ArgumentParser(description='Train a models')
     parser.add_argument('config', help='train config file path')
     parser.add_argument('--work-dir', help='the dir to save logs and models')
     parser.add_argument(
@@ -44,32 +44,6 @@ def parse_args():
 
     return args
 
-
-def evaluate(model, valid_dataloader):
-    model.eval()
-    eval_timer.tik()
-
-    data_len = 0
-    total_acc = 0
-
-    with torch.no_grad():
-        for step, data in enumerate(valid_dataloader):
-            images, labels = data['img'], data['gt_label']
-            images, labels = images.cuda(), labels.cuda()
-            data_len += len(labels)
-            if cfg.fp16:
-                with autocast():
-                    logits = model(images)
-            else:
-                logits = model(images)
-
-            _acc = accuracy(logits, labels)
-            total_acc += _acc[0].item() * len(labels)
-
-    model.train()
-    return total_acc / data_len
-
-
 if __name__ == '__main__':
     args = parse_args()
     cfg = Config.fromfile(args.config)
@@ -94,8 +68,6 @@ if __name__ == '__main__':
     log_func('[i] valid dataset is {}'.format(cfg.data.val.ann_file))
     train_dataset = build_dataset(cfg.data.train)
     valid_dataset = build_dataset(cfg.data.val)
-
-
 
     train_dataloader = build_dataloader(dataset=train_dataset, samples_per_gpu=cfg.batch_size,
                                         workers_per_gpu=cfg.num_workers, shuffle=True, pin_memory=False)
@@ -191,20 +163,21 @@ if __name__ == '__main__':
         # Evaluation
         #################################################################################################
         if (iteration + 1) % val_iteration == 0:
-            acc = evaluate(model=model, valid_dataloader=valid_dataloader)
+            eval_timer.tik()
+            acc = valid_dataset.evaluate(cfg=cfg, model=model, valid_dataloader=valid_dataloader)
             time = eval_timer.tok(clear=True)
             if best_accuracy < acc:
                 best_accuracy = acc
                 save_model_func()
-                log_func('[i] save model')
+                log_func('[i] save models')
 
             log_func(f'[i] iteration={iteration + 1}, \
-                train_ACC={acc}%, \
-                best_train_ACC={best_accuracy}%, \
+                valid_ACC={acc}%, \
+                best_valid_ACC={best_accuracy}%, \
                 time={time} sec')
 
-            writer.add_scalar('Evaluation/train_ACC', acc, iteration)
-            writer.add_scalar('Evaluation/best_train_ACC', best_accuracy, iteration)
+            writer.add_scalar('Evaluation/valid_ACC', acc, iteration)
+            writer.add_scalar('Evaluation/best_valid_ACC', best_accuracy, iteration)
 
         #################################################################################################
         # For Step()

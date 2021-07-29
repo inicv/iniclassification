@@ -19,6 +19,7 @@ def build_dataloader(dataset,
                      num_gpus=1,
                      shuffle=True,
                      seed=None,
+                     drop_last=False,
                      pin_memory=True,
                      sampler=None,
                      **kwargs):
@@ -61,6 +62,7 @@ def build_dataloader(dataset,
         pin_memory=pin_memory,
         shuffle=shuffle,
         worker_init_fn=init_fn,
+        drop_last=drop_last,
         **kwargs)
 
     return data_loader

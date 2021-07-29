@@ -6,7 +6,7 @@ def calculate_confusion_matrix(pred, target):
     """Calculate confusion matrix according to the prediction and target.
 
     Args:
-        pred (torch.Tensor | np.array): The model prediction with shape (N, C).
+        pred (torch.Tensor | np.array): The models prediction with shape (N, C).
         target (torch.Tensor | np.array): The target of each prediction with
             shape (N, 1) or (N,).
 
@@ -41,7 +41,7 @@ def precision_recall_f1(pred, target, average_mode='macro', thrs=None):
     target.
 
     Args:
-        pred (torch.Tensor | np.array): The model prediction with shape (N, C).
+        pred (torch.Tensor | np.array): The models prediction with shape (N, C).
         target (torch.Tensor | np.array): The target of each prediction with
             shape (N, 1) or (N,).
         average_mode (str): The type of averaging performed on the result.
@@ -123,7 +123,7 @@ def precision(pred, target, average_mode='macro', thrs=None):
     """Calculate precision according to the prediction and target.
 
     Args:
-        pred (torch.Tensor | np.array): The model prediction with shape (N, C).
+        pred (torch.Tensor | np.array): The models prediction with shape (N, C).
         target (torch.Tensor | np.array): The target of each prediction with
             shape (N, 1) or (N,).
         average_mode (str): The type of averaging performed on the result.
@@ -151,7 +151,7 @@ def recall(pred, target, average_mode='macro', thrs=None):
     """Calculate recall according to the prediction and target.
 
     Args:
-        pred (torch.Tensor | np.array): The model prediction with shape (N, C).
+        pred (torch.Tensor | np.array): The models prediction with shape (N, C).
         target (torch.Tensor | np.array): The target of each prediction with
             shape (N, 1) or (N,).
         average_mode (str): The type of averaging performed on the result.
@@ -179,7 +179,7 @@ def f1_score(pred, target, average_mode='macro', thrs=None):
     """Calculate F1 score according to the prediction and target.
 
     Args:
-        pred (torch.Tensor | np.array): The model prediction with shape (N, C).
+        pred (torch.Tensor | np.array): The models prediction with shape (N, C).
         target (torch.Tensor | np.array): The target of each prediction with
             shape (N, 1) or (N,).
         average_mode (str): The type of averaging performed on the result.
@@ -208,7 +208,7 @@ def support(pred, target, average_mode='macro'):
     prediction and target.
 
     Args:
-        pred (torch.Tensor | np.array): The model prediction with shape (N, C).
+        pred (torch.Tensor | np.array): The models prediction with shape (N, C).
         target (torch.Tensor | np.array): The target of each prediction with
             shape (N, 1) or (N,).
         average_mode (str): The type of averaging performed on the result.
@@ -244,7 +244,7 @@ def average_precision(pred, target):
     Note that no approximation is involved since the curve is piecewise
     constant.
     Args:
-        pred (np.ndarray): The model prediction with shape (N, ).
+        pred (np.ndarray): The models prediction with shape (N, ).
         target (np.ndarray): The target of each prediction with shape (N, ).
     Returns:
         float: a single float as average precision value.
@@ -273,7 +273,7 @@ def average_precision(pred, target):
 def mAP(pred, target):
     """Calculate the mean average precision with respect of classes.
     Args:
-        pred (torch.Tensor | np.ndarray): The model prediction with shape
+        pred (torch.Tensor | np.ndarray): The models prediction with shape
             (N, C), where C is the number of classes.
         target (torch.Tensor | np.ndarray): The target of each prediction with
             shape (N, C), where C is the number of classes. 1 stands for

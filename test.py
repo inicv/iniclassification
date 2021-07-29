@@ -64,11 +64,11 @@ def single_model_predict_tta(predict_model):
 #     preds_dict = dict()
 #     for model_name in model_name_list:
 #         for fold_idx in range(5):
-#             model = Net(model_name).to(device)
+#             models = Net(model_name).to(device)
 #             model_save_path = os.path.join(
 #                 config.dir_weight, '{}_fold{}.bin'.format(model_name, fold_idx))
-#             model.load_state_dict(torch.load(model_save_path))
-#             pred_list = predict(model)
+#             models.load_state_dict(torch.load(model_save_path))
+#             pred_list = predict(models)
 #             submission = pd.DataFrame(pred_list)
 #             # submission = pd.DataFrame({"id": range(len(pred_list)), "label": pred_list})
 #             submission.to_csv(
@@ -86,10 +86,10 @@ def single_model_predict_tta(predict_model):
 #     preds_dict = dict()
 #     for model_name in model_name_list:
 #         for fold_idx in range(5):
-#             model = Net(model_name).to(device)
+#             models = Net(model_name).to(device)
 #             model_save_path = os.path.join(
 #                 config.dir_weight, '{}_fold{}.bin'.format(model_name, fold_idx))
-#             model.load_state_dict(torch.load(model_save_path))
+#             models.load_state_dict(torch.load(model_save_path))
 #             '/home/muyun99/data/dataset/AIyanxishe/Image_Classification/weight/resnet18_train_size_256_fold0.bin'
 #             transforms = tta.Compose([
 #                 tta.Resize([int(config.size_test_image), int(config.size_test_image)]),
@@ -99,7 +99,7 @@ def single_model_predict_tta(predict_model):
 #                 # tta.Multiply(factors=[0.9, 1, 1.1]),
 #                 tta.FiveCrops(config.size_test_image, config.size_test_image)
 #             ])
-#             tta_model = tta.ClassificationTTAWrapper(model, transforms)
+#             tta_model = tta.ClassificationTTAWrapper(models, transforms)
 #
 #             pred_list = predict(tta_model)
 #             submission = pd.DataFrame(pred_list)
@@ -181,16 +181,16 @@ if __name__ == "__main__":
     valid_csv_path = os.path.join(cfg.data.val.data_prefix, cfg.data.val.ann_file)
     valid_data = pd.read_csv(valid_csv_path)
 
-    # model = build_model(cfg)
-    # model.load_state_dict(torch.load(cfg.model_path))
-    # model = model.cuda()
-    # model.eval()
-    # log_func('[i] Architecture is {}'.format(cfg.model))
-    # log_func('[i] Total Params: %.2fM' % (calculate_parameters(model)))
+    # models = build_model(cfg)
+    # models.load_state_dict(torch.load(cfg.model_path))
+    # models = models.cuda()
+    # models.eval()
+    # log_func('[i] Architecture is {}'.format(cfg.models))
+    # log_func('[i] Total Params: %.2fM' % (calculate_parameters(models)))
     #
     # test_timer = Timer()
-    # # pred_valid_list, pred_test_list = single_model_predict(model)
-    # pred_valid_list, pred_test_list = single_model_predict_tta(model)
+    # # pred_valid_list, pred_test_list = single_model_predict(models)
+    # pred_valid_list, pred_test_list = single_model_predict_tta(models)
     # valid_data['image'] = valid_data['filename']
     # valid_data['label'] = pd.Series(pred_valid_list)
     # valid_df = pd.concat([valid_data['image'], valid_data['label']], axis=1)

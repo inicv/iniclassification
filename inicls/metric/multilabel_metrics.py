@@ -9,7 +9,7 @@ def average_performance(pred, target, thr=None, k=None):
     average, O stands for overall average, P stands for precision, R stands for
     recall and F1 stands for F1-score.
     Args:
-        pred (torch.Tensor | np.ndarray): The model prediction with shape
+        pred (torch.Tensor | np.ndarray): The models prediction with shape
             (N, C), where C is the number of classes.
         target (torch.Tensor | np.ndarray): The target of each prediction with
             shape (N, C), where C is the number of classes. 1 stands for
