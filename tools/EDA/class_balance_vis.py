@@ -48,7 +48,7 @@ def plot_aug(img_src, method):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Train a model')
+    parser = argparse.ArgumentParser(description='Train a models')
     parser.add_argument('config', help='train config file path')
     args = parser.parse_args()
     cfg = Config.fromfile(args.config)
