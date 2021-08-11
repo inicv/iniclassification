@@ -12,6 +12,8 @@ img_norm_cfg = dict(
 )
 train_pipeline = [
     dict(type='RandomResizedCrop', size=224),
+    # dict(type='RandomAffine',),
+    # dict(type='ColorJitter', brightness=.05, saturation=.05),
     dict(type='RandomFlip', flip_prob=0.5, direction='horizontal'),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='ImageToTensor', keys=['img']),
