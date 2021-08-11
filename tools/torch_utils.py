@@ -13,6 +13,9 @@ import torch.nn.functional as F
 from torch.optim.lr_scheduler import LambdaLR
 
 def set_seed(cfg):
+    torch.backends.cudnn.deterministic = True  # cpu/gpu结果一致
+    torch.backends.cudnn.benchmark = True  # 训练集变化不大时使训练加速
+
     seed = cfg.random_seed
     random.seed(seed)
     np.random.seed(seed)
@@ -37,7 +40,7 @@ def get_test_submission_path(cfg, tag):
 
 def get_valid_submission_path(cfg, tag):
     work_dir = os.path.join('./work_dirs', os.path.splitext(os.path.basename(cfg.config))[0]+f'_tag_{tag}')
-    valid_submission_path = os.path.join(work_dir, f'test_submission_{tag}.csv')
+    valid_submission_path = os.path.join(work_dir, f'valid_submission_{tag}.csv')
     return valid_submission_path
 
 def calculate_acc_from_two_list(list1, list2):

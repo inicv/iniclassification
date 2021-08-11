@@ -9,147 +9,149 @@ def build_optimizer(cfg, model):
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'A2GradInc':
+    elif name_optimizer == 'A2GradInc':
         optimizer = optim.A2GradInc(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'A2GradUni':
+    elif name_optimizer == 'A2GradUni':
         optimizer = optim.A2GradUni(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'AccSGD':
+    elif name_optimizer == 'AccSGD':
         optimizer = optim.AccSGD(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'AdaBelief':
+    elif name_optimizer == 'AdaBelief':
         optimizer = optim.AdaBelief(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'AdaBound':
+    elif name_optimizer == 'AdaBound':
         optimizer = optim.AdaBound(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'AdaMod':
+    elif name_optimizer == 'AdaMod':
         optimizer = optim.AdaMod(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'Adafactor':
+    elif name_optimizer == 'Adafactor':
         optimizer = optim.Adafactor(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'AdamP':
+    elif name_optimizer == 'AdamP':
         optimizer = optim.AdamP(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'AggMo':
+    elif name_optimizer == 'AggMo':
         optimizer = optim.AggMo(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'Apollo':
+    elif name_optimizer == 'Apollo':
         optimizer = optim.Apollo(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'DiffGrad':
+    elif name_optimizer == 'DiffGrad':
         optimizer = optim.DiffGrad(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'Lamb':
+    elif name_optimizer == 'Lamb':
         optimizer = optim.Lamb(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'Lookahead':
+    elif name_optimizer == 'Lookahead':
         yogi = optim.Yogi(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
         optimizer = optim.Lookahead(yogi, k=5, alpha=0.5)
-    if name_optimizer == 'NovoGrad':
+    elif name_optimizer == 'NovoGrad':
         optimizer = optim.NovoGrad(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'PID':
+    elif name_optimizer == 'PID':
         optimizer = optim.PID(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'QHAdam':
+    elif name_optimizer == 'QHAdam':
         optimizer = optim.QHAdam(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'QHM':
+    elif name_optimizer == 'QHM':
         optimizer = optim.QHM(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'RAdam':
+    elif name_optimizer == 'RAdam':
         optimizer = optim.RAdam(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'Ranger':
+    elif name_optimizer == 'Ranger':
         optimizer = optim.Ranger(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'RangerQH':
+    elif name_optimizer == 'RangerQH':
         optimizer = optim.RangerQH(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'RangerVA':
+    elif name_optimizer == 'RangerVA':
         optimizer = optim.RangerVA(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'SGDP':
+    elif name_optimizer == 'SGDP':
         optimizer = optim.SGDP(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'SGDW':
+    elif name_optimizer == 'SGDW':
         optimizer = optim.SGDW(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'SWATS':
+    elif name_optimizer == 'SWATS':
         optimizer = optim.SWATS(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'Shampoo':
+    elif name_optimizer == 'Shampoo':
         optimizer = optim.Shampoo(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'Yogi':
+    elif name_optimizer == 'Yogi':
         optimizer = optim.Yogi(
             model.parameters(),
             lr=cfg.optimizer.lr
         )
-    if name_optimizer == 'Adam':
+    elif name_optimizer == 'Adam':
         optimizer = torch.optim.Adam(
             model.parameters(),
-            lr=cfg.optimizer.lr
+            lr=cfg.optimizer.lr,
+            weight_decay=cfg.optimizer.weight_decay
         )
-    if name_optimizer == 'SGD':
+    elif name_optimizer == 'SGD':
         optimizer = torch.optim.SGD(
             model.parameters(),
             lr=cfg.optimizer.lr,
-            momentum=cfg.optimizer.momentum
+            momentum=cfg.optimizer.momentum,
+            weight_decay=cfg.optimizer.weight_decay
         )
     if optimizer is None:
         raise Exception('optimizer is wrong')

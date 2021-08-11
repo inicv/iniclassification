@@ -43,6 +43,13 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
 - **Distillation**
   * [ ] Knowledge Distillation
   
+- **Pruning**
+  * [ ] Pruning
+  
+- **Deployment**
+  * [ ] [ncnn](https://github.com/Tencent/ncnn)
+  * [ ] [TensorRT](https://github.com/NVIDIA/TensorRT)
+  
 - **Bag of Tricks**
   * [x] [LR warmup](https://github.com/ildoonet/pytorch-gradual-warmup-lr)
   * [x] [Model ensemble](https://github.com/TorchEnsemble-Community/Ensemble-Pytorch)
@@ -54,9 +61,11 @@ iniclassification 希望成为一个较为全能的框架，在优化器、学�
 - **Configuration Framework**
   * [x] [open-mmlab/mmcv](https://github.com/open-mmlab/mmcv) or [~~facebookresearch/hydra~~](https://github.com/facebookresearch/hydra)
   
-- **AutoML Experiment**
+- **Hyper-Parameter Optimization**
   * [ ] [microsoft/nni](https://github.com/microsoft/nni)
-  
+
+- **Bug fix**
+  * [ ] 多次推理精度不一致
 ### 如何快速上手
 
 详情见 [GETTING_STARTED.md](https://github.com/inicv/iniclassification/tree/main/document/GETTING_STARTED.md).

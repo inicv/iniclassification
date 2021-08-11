@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from glob import glob
 
 def analyse_class_num():
     raw_train_df = pd.read_csv(cfg.path_raw_train_csv)
@@ -41,17 +42,15 @@ def split_train_val():
         for idx, name in enumerate(classnames):
             name = name.strip()
             label_index_map[name] = idx
-
-
     raw_train_df.columns = ['filename', 'label']
 
-    raw_train_df['filename'] = raw_train_df['filename'].apply(
-        lambda item: os.path.join(cfg.path_train_img, item.split('/')[-1])
-    )
+    # raw_train_df['filename'] = raw_train_df['filename'].apply(
+    #     lambda item: os.path.join(cfg.path_train_img, item.split('/')[-1])
+    # )
     raw_train_df['label'] = raw_train_df['label'].apply(
         lambda item: label_index_map[item]
     )
-    raw_train_df.to_csv(os.path.join(cfg.path_save_trainval_csv, f'raw_train.csv'))
+    raw_train_df.to_csv(os.path.join(cfg.path_save_trainval_csv, f'raw_train.csv'), index=False)
 
     x = raw_train_df['filename'].values
     y = raw_train_df['label'].values
@@ -64,28 +63,52 @@ def split_train_val():
         for fold_idx, (train_idx, val_idx) in enumerate(skf.split(x, y)):
             fold_train = raw_train_df.iloc[train_idx]
             fold_valid = raw_train_df.iloc[val_idx]
-            fold_train.to_csv(os.path.join(cfg.path_save_trainval_csv, f'train_fold{fold_idx}.csv'))
-            fold_valid.to_csv(os.path.join(cfg.path_save_trainval_csv, f'valid_fold{fold_idx}.csv'))
+            fold_train.to_csv(os.path.join(cfg.path_save_trainval_csv, f'train_fold{fold_idx}.csv'), index=False)
+            fold_valid.to_csv(os.path.join(cfg.path_save_trainval_csv, f'valid_fold{fold_idx}.csv'), index=False)
             print(f'train_fold{fold_idx}: {fold_train.shape[0]}, valid_fold{fold_idx}: {fold_valid.shape[0]}')
     else:
         train_data, valid_data = train_test_split(
             raw_train_df, shuffle=True, test_size=cfg.size_valid, random_state=cfg.seed_random)
-        train_data.to_csv(os.path.join(cfg.path_save_trainval_csv, f'train.csv'))
-        valid_data.to_csv(os.path.join(cfg.path_save_trainval_csv, f'valid.csv'))
+        train_data.to_csv(os.path.join(cfg.path_save_trainval_csv, f'train.csv'), index=False)
+        valid_data.to_csv(os.path.join(cfg.path_save_trainval_csv, f'valid.csv'), index=False)
         print(f'train:{train_data.shape[0]}, valid:{valid_data.shape[0]}')
+
+def generate_raw_train_test_csv():
+    train_imgs = glob(os.path.join(cfg.path_train_img, '*/*.png'))
+    test_imgs = glob(os.path.join(cfg.path_test_img, '*.png'))
+
+    train_dict = dict()
+    test_dict = dict()
+    for idx, img in enumerate(train_imgs):
+        train_dict[idx] = [img, img.split('/')[-2]]
+    for img in test_imgs:
+        test_dict[img] = None
+
+    raw_train_df = pd.DataFrame.from_dict(train_dict, orient='index')
+    raw_train_df.columns = ['filename', 'label']
+    raw_train_df.to_csv(cfg.path_raw_train_csv, index=False)
+
+    raw_test_df = pd.DataFrame(test_imgs)
+    raw_test_df.columns = ['filename']
+    raw_test_df.to_csv(cfg.path_raw_test_csv, index=False)
+
+    print()
 
 def generate_test_csv():
     raw_test_df = pd.read_csv(cfg.path_raw_test_csv)
     raw_test_df.columns = ['filename']
+    raw_test_df.sort_values('filename', inplace=True)
 
     raw_test_df['filename'] = raw_test_df['filename'].apply(
-        lambda item: os.path.join(cfg.path_train_img, item.split('/')[-1])
+        lambda item: os.path.join(cfg.path_test_img, item.split('/')[-1])
     )
-    raw_test_df.to_csv(os.path.join(cfg.path_save_test_csv, f'test.csv'))
+    raw_test_df.to_csv(os.path.join(cfg.path_save_test_csv, f'test.csv'), index=False)
 
 if __name__ == '__main__':
     cfg = Config.fromfile('config_data_utils_test.py')
+
+    generate_raw_train_test_csv()
     analyse_class_num()
     generate_classmap()
     split_train_val()
-    # generate_test_csv()
+    generate_test_csv()
